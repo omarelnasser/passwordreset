@@ -104,42 +104,53 @@
 
         showMessage('Verifying Supabase Auth account...', 'info');
 
-        // 2. Check with Admin API if a user exists in Auth
-        const { data: userData, error: adminError } = await adminClient.auth.admin.getUserByEmail(email);
+         // 2. Check with Admin API if a user exists in Auth
+const { data: users, error: adminError } = await adminClient.auth.admin.listUsers({
+  email
+});
 
-        if (adminError && adminError.message.includes("User not found")) {
-          // No Auth account → create one
-          showMessage('Creating Supabase Auth account...', 'info');
-          const randomPassword = Math.random().toString(36).slice(2, 15) + Math.random().toString(36).slice(2, 15);
+if (adminError) {
+  console.error("Admin API error:", adminError.message);
+  showMessage('An error occurred during account verification.', 'error');
+  sendButton.disabled = false;
+  sendButton.textContent = 'Send Reset Link';
+  return;
+}
 
-          const { data: signUpData, error: signUpError } = await adminClient.auth.admin.createUser({
-            email: email,
-            password: randomPassword,
-            email_confirm: true
-          });
+if (users && users.users.length === 0) {
+  // No Auth account → create one
+  showMessage('Creating Supabase Auth account...', 'info');
+  const randomPassword = Math.random().toString(36).slice(2, 15) + Math.random().toString(36).slice(2, 15);
 
-          if (signUpError) {
-            showMessage('❌ Error creating account: ' + signUpError.message, 'error');
-            console.error('Sign up error:', signUpError);
-          } else {
-            showMessage('Account created. Sending password reset link...', 'info');
-            await client.auth.resetPasswordForEmail(email, {
-              redirectTo: 'https://changepassword-kappa.vercel.app/createnewpassword.html'
-            });
-            showMessage('✅ Account created and reset link sent to ' + email, 'success');
-          }
+  const { data: signUpData, error: signUpError } = await adminClient.auth.admin.createUser({
+    email: email,
+    password: randomPassword,
+    email_confirm: true
+  });
 
-        } else if (userData && userData.user) {
-          // User exists → send reset link
-          showMessage('Sending password reset link...', 'info');
-          const { error: resetError } = await client.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://changepassword-kappa.vercel.app/createnewpassword.html'
-          });
-          if (resetError) {
-            showMessage('❌ Error sending reset link: ' + resetError.message, 'error');
-          } else {
-            showMessage('✅ Reset link sent to ' + email, 'success');
-          }
+  if (signUpError) {
+    showMessage('❌ Error creating account: ' + signUpError.message, 'error');
+    console.error('Sign up error:', signUpError);
+  } else {
+    showMessage('Account created. Sending password reset link...', 'info');
+    await client.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://changepassword-kappa.vercel.app/createnewpassword.html'
+    });
+    showMessage('✅ Account created and reset link sent to ' + email, 'success');
+  }
+} else {
+  // User exists → send reset link
+  showMessage('Sending password reset link...', 'info');
+  const { error: resetError } = await client.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://changepassword-kappa.vercel.app/createnewpassword.html'
+  });
+  if (resetError) {
+    showMessage('❌ Error sending reset link: ' + resetError.message, 'error');
+  } else {
+    showMessage('✅ Reset link sent to ' + email, 'success');
+  }
+}
+
         } else if (adminError) {
           console.error("Unexpected admin error:", adminError.message);
           showMessage('An error occurred during account verification.', 'error');
@@ -152,4 +163,5 @@
   </div>
 </body>
 </html>
+
 
