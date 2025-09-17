@@ -104,10 +104,20 @@
 
         showMessage('Verifying Supabase Auth account...', 'info');
 
-        // 2. Check if user exists in Supabase Auth
-        const { data: userData, error: adminError } = await adminClient.auth.admin.getUserByEmail(email);
+        // 2. Check if user exists in Supabase Auth (via listUsers)
+        const { data: userList, error: adminError } = await adminClient.auth.admin.listUsers();
 
-        if (adminError && adminError.message.includes("User not found")) {
+        if (adminError) {
+          console.error("Admin API error:", adminError.message);
+          showMessage('An error occurred during account verification.', 'error');
+          sendButton.disabled = false;
+          sendButton.textContent = 'Send Reset Link';
+          return;
+        }
+
+        const existingUser = userList.users.find(u => u.email?.toLowerCase() === email);
+
+        if (!existingUser) {
           // No Auth account → create one
           showMessage('Creating Supabase Auth account...', 'info');
           const randomPassword = Math.random().toString(36).slice(2, 15) + Math.random().toString(36).slice(2, 15);
@@ -129,7 +139,7 @@
             showMessage('✅ Account created and reset link sent to ' + email, 'success');
           }
 
-        } else if (userData && userData.user) {
+        } else {
           // User exists → send reset link
           showMessage('Sending password reset link...', 'info');
           const { error: resetError } = await client.auth.resetPasswordForEmail(email, {
@@ -140,9 +150,6 @@
           } else {
             showMessage('✅ Reset link sent to ' + email, 'success');
           }
-        } else if (adminError) {
-          console.error("Unexpected admin error:", adminError.message);
-          showMessage('An error occurred during account verification.', 'error');
         }
 
         sendButton.disabled = false;
