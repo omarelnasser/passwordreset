@@ -136,7 +136,7 @@
             await client.auth.resetPasswordForEmail(email, {
               redirectTo: 'https://changepassword-kappa.vercel.app/createnewpassword.html'
             });
-            showMessage('✅ Account created and reset link sent to ' + email, 'success');
+            showMessage('✅ Account created and reset link sent to ' + email + ' within 5 minutes', 'success');
           }
 
         } else {
@@ -148,7 +148,7 @@
           if (resetError) {
             showMessage('❌ Error sending reset link: ' + resetError.message, 'error');
           } else {
-            showMessage('✅ Reset link will be sent to ' + email + 'within 5 minutes', 'success');
+            showMessage('✅ Reset link will be sent to ' + email + ' within 5 minutes', 'success');
           }
         }
 
@@ -159,4 +159,5 @@
   </div>
 </body>
 </html>
+
 
