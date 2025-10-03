@@ -33,9 +33,11 @@
     <div id="message-box" class="mt-6 p-4 rounded-lg text-sm hidden"></div>
 
     <script>
-      // ⚠️ IMPORTANT: Replace with your actual project reference and function name
       // The Edge Function URL is public and safe to expose.
       const EDGE_FUNCTION_URL = 'https://qxluetvkqxillhqsbubl.supabase.co/functions/v1/send-reset-link';
+      
+      // Your project's Anon Key (Public Key) - safe to expose on the client
+      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4bHVldHZrcXhpbGxocXNidWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5MzIwNTMsImV4cCI6MjA0OTUwODA1M30.11cD0yE0aJW1OIx0kB4EaWtCvg5nUkj-0QuTVk-C7zg';
 
       const emailForm = document.getElementById('email-form');
       const emailInput = document.getElementById('email');
@@ -68,6 +70,9 @@
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              // FIX: Add public key to authorize access to the Edge Function endpoint
+              'Authorization': `Bearer ${ANON_KEY}`,
+              'apikey': ANON_KEY
             },
             body: JSON.stringify({ email: email }),
           });
