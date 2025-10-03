@@ -32,19 +32,10 @@
 
     <div id="message-box" class="mt-6 p-4 rounded-lg text-sm hidden"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-      const SUPABASE_URL = 'https://qxluetvkqxillhqsbubl.supabase.co';
-
-      // ⚠️ TEST ONLY: Using service_role key here (never expose in production)
-      const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4bHVldHZrcXhpbGxocXNidWJsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczMzkzMjA1MywiZXhwIjoyMDQ5NTA4MDUzfQ.iN5FcDv76gXu5Mbi7iUvRq-0ALBSvPlLc20mVBDvxPw';
-      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4bHVldHZrcXhpbGxocXNidWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5MzIwNTMsImV4cCI6MjA0OTUwODA1M30.11cD0yE0aJW1OIx0kB4EaWtCvg5nUkj-0QuTVk-C7zg';
-
-      // Client for DB queries (safe)
-      const client = supabase.createClient(SUPABASE_URL, ANON_KEY);
-
-      // Admin client (used for checking/creating auth users)
-      const adminClient = supabase.createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
+      // ⚠️ IMPORTANT: Replace with your actual project reference and function name
+      // The Edge Function URL is public and safe to expose.
+      const EDGE_FUNCTION_URL = 'https://qxluetvkqxillhqsbubl.supabase.co/functions/v1/send-reset-link';
 
       const emailForm = document.getElementById('email-form');
       const emailInput = document.getElementById('email');
@@ -70,94 +61,40 @@
 
         sendButton.disabled = true;
         sendButton.textContent = 'Processing...';
-        showMessage('Checking account details...', 'info');
+        showMessage('Requesting password reset...', 'info');
 
-        // 1. Check if email exists in one of your DB tables
-        let userFoundInDatabase = false;
-        const tableConfigs = [
-          { name: 'students', emailColumn: 'email' },
-          { name: 'teachers', emailColumn: 'teacheremail' },
-          { name: 'parents', emailColumn: 'parentemail' }
-        ];
-
-        for (const config of tableConfigs) {
-          const { data, error } = await client
-            .from(config.name)
-            .select(config.emailColumn)
-            .eq(config.emailColumn, email)
-            .maybeSingle();
-
-          if (data) {
-            userFoundInDatabase = true;
-            console.log(`Email found in ${config.name} table.`);
-            break;
-          }
-          if (error) console.error(`Error checking ${config.name}:`, error.message);
-        }
-
-        if (!userFoundInDatabase) {
-          showMessage('Account not found. Please ensure you have registered with this email.', 'error');
-          sendButton.disabled = false;
-          sendButton.textContent = 'Send Reset Link';
-          return;
-        }
-
-        showMessage('Verifying Supabase Auth account...', 'info');
-
-        // 2. Check if user exists in Supabase Auth (via listUsers)
-        const { data: userList, error: adminError } = await adminClient.auth.admin.listUsers();
-
-        if (adminError) {
-          console.error("Admin API error:", adminError.message);
-          showMessage('An error occurred during account verification.', 'error');
-          sendButton.disabled = false;
-          sendButton.textContent = 'Send Reset Link';
-          return;
-        }
-
-        const existingUser = userList.users.find(u => u.email?.toLowerCase() === email);
-
-        if (!existingUser) {
-          // No Auth account → create one
-          showMessage('Creating Supabase Auth account...', 'info');
-          const randomPassword = Math.random().toString(36).slice(2, 15) + Math.random().toString(36).slice(2, 15);
-
-          const { data: signUpData, error: signUpError } = await adminClient.auth.admin.createUser({
-            email: email,
-            password: randomPassword,
-            email_confirm: true
+        try {
+          const response = await fetch(EDGE_FUNCTION_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email }),
           });
 
-          if (signUpError) {
-            showMessage('❌ Error creating account: ' + signUpError.message, 'error');
-            console.error('Sign up error:', signUpError);
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            // Success or success-like message (e.g., reset link sent)
+            showMessage('✅ ' + result.message, 'success');
+          } else if (response.ok && !result.success) {
+            // Account not found or a handled business error
+            showMessage('❌ ' + result.message, 'error');
           } else {
-            showMessage('Account created. Sending password reset link...', 'info');
-            await client.auth.resetPasswordForEmail(email, {
-              redirectTo: 'https://changepassword-kappa.vercel.app/createnewpassword.html'
-            });
-            showMessage('✅ Account created and reset link sent to ' + email + ' within 5 minutes', 'success');
+            // Server error (5xx or unhandled client error 4xx)
+            const errorMessage = result.error || 'An unexpected error occurred. Please try again.';
+            showMessage('❌ ' + errorMessage, 'error');
           }
 
-        } else {
-          // User exists → send reset link
-          showMessage('Sending password reset link...', 'info');
-          const { error: resetError } = await client.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://changepassword-kappa.vercel.app/createnewpassword.html'
-          });
-          if (resetError) {
-            showMessage('❌ Error sending reset link: ' + resetError.message, 'error');
-          } else {
-            showMessage('✅ Reset link will be sent to ' + email + ' within 5 minutes', 'success');
-          }
+        } catch (error) {
+          console.error('Network or fetch error:', error);
+          showMessage('❌ A communication error occurred. Check your network and try again.', 'error');
+        } finally {
+          sendButton.disabled = false;
+          sendButton.textContent = 'Send Reset Link';
         }
-
-        sendButton.disabled = false;
-        sendButton.textContent = 'Send Reset Link';
       });
     </script>
   </div>
 </body>
 </html>
-
-
