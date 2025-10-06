@@ -13,6 +13,7 @@
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
   <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
     <h2 class="text-3xl font-bold text-gray-800 mb-6">Send Password Reset Link</h2>
+
     <form id="email-form" class="space-y-4">
       <input
         type="email"
@@ -33,13 +34,13 @@
     <div id="message-box" class="mt-6 p-4 rounded-lg text-sm hidden"></div>
 
     <script>
-      // ⚠️ IMPORTANT: Replace this with your deployed Google Cloud Function URL
-      const CLOUD_FUNCTION_ENDPOINT = 'YOUR_CLOUD_FUNCTION_HTTP_TRIGGER_URL_HERE'; 
-
       const emailForm = document.getElementById('email-form');
       const emailInput = document.getElementById('email');
       const sendButton = document.getElementById('sendButton');
       const messageBox = document.getElementById('message-box');
+
+      // ⚙️ Replace this with your deployed Supabase Edge Function URL
+      const EDGE_FUNCTION_URL = "https://qxluetvkqxillhqsbubl.supabase.co/functions/v1/send-reset";
 
       function showMessage(text, type = 'info') {
         messageBox.textContent = text;
@@ -56,40 +57,35 @@
 
       emailForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
         const email = emailInput.value.trim().toLowerCase();
+        if (!email) return showMessage('Please enter a valid email address.', 'error');
 
         sendButton.disabled = true;
         sendButton.textContent = 'Processing...';
-        showMessage('Sending request securely...', 'info');
+        showMessage('Please wait...', 'info');
 
         try {
-          const response = await fetch(CLOUD_FUNCTION_ENDPOINT, {
+          const response = await fetch(EDGE_FUNCTION_URL, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: email }),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
           });
 
           const result = await response.json();
-          
-          if (response.ok && result.success) {
-            showMessage(result.message, 'success');
-          } else if (response.ok && !result.success) {
-            // This handles your specific 'Account not found' logic from the CF
-            showMessage(result.message, 'error');
-          } else {
-            // This handles general server/network errors
-            showMessage(`❌ Error: ${result.error || 'Request failed.'}`, 'error');
-          }
 
+          if (result.status === 'success') {
+            showMessage(result.message, 'success');
+          } else {
+            showMessage(result.message || 'An error occurred.', 'error');
+          }
         } catch (error) {
-          console.error('Fetch error:', error);
-          showMessage('❌ A network error occurred. Please try again.', 'error');
-        } finally {
-          sendButton.disabled = false;
-          sendButton.textContent = 'Send Reset Link';
+          console.error('Error:', error);
+          showMessage('An unexpected error occurred. Please try again later.', 'error');
         }
+
+        sendButton.disabled = false;
+        sendButton.textContent = 'Send Reset Link';
       });
     </script>
   </div>
