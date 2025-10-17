@@ -1,93 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Send Password Reset Link</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Send Password Reset Link</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLMDJzL3MxJpB+W0/qLYl2k9Rj7P3q1D61C8y8Q+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGGg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-  <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6">Send Password Reset Link</h2>
+  <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">Send Password Reset Link</h2>
 
-    <form id="email-form" class="space-y-4">
-      <input
-        type="email"
-        id="email"
-        placeholder="Enter your email"
-        required
-        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out text-gray-700"
-      />
-      <button
-        type="submit"
-        id="sendButton"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
-      >
-        Send Reset Link
-      </button>
-    </form>
+    <form id="email-form" class="space-y-4">
+      <input
+        type="email"
+        id="email"
+        placeholder="Enter your email"
+        required
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out text-gray-700"
+      />
+      <button
+        type="submit"
+        id="sendButton"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
+      >
+        Send Reset Link
+      </button>
+    </form>
 
-    <div id="message-box" class="mt-6 p-4 rounded-lg text-sm hidden"></div>
+    <div id="message-box" class="mt-6 p-4 rounded-lg text-sm hidden"></div>
 
-    <script>
-      const emailForm = document.getElementById('email-form');
-      const emailInput = document.getElementById('email');
-      const sendButton = document.getElementById('sendButton');
-      const messageBox = document.getElementById('message-box');
+        <div id="support-link" class="mt-6 hidden">
+      <p class="text-gray-600 text-sm mb-2">
+        Not finding your account? Please **contact support**.
+      </p>
+      <a
+        href="https://wa.me/201093022198"
+        target="_blank"
+        class="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+        title="Contact via WhatsApp"
+      >
+        <i class="fab fa-whatsapp text-lg mr-2"></i>         WhatsApp Support
+      </a>
+    </div>
+        <script>
+      const emailForm = document.getElementById('email-form');
+      const emailInput = document.getElementById('email');
+      const sendButton = document.getElementById('sendButton');
+      const messageBox = document.getElementById('message-box');
+      // Get the new support link element
+      const supportLink = document.getElementById('support-link');
 
-      // ⚙️ Replace this with your deployed Supabase Edge Function URL
-      const EDGE_FUNCTION_URL = "https://qxluetvkqxillhqsbubl.supabase.co/functions/v1/send-reset";
+      // ⚙️ Replace this with your deployed Supabase Edge Function URL
+      const EDGE_FUNCTION_URL = "https://qxluetvkqxillhqsbubl.supabase.co/functions/v1/send-reset";
 
-      function showMessage(text, type = 'info') {
-        messageBox.textContent = text;
-        messageBox.className = 'mt-6 p-4 rounded-lg text-sm';
-        if (type === 'success') {
-          messageBox.classList.add('bg-green-100', 'text-green-800', 'border', 'border-green-400');
-        } else if (type === 'error') {
-          messageBox.classList.add('bg-red-100', 'text-red-800', 'border', 'border-red-400');
-        } else {
-          messageBox.classList.add('bg-blue-100', 'text-blue-800', 'border', 'border-blue-400');
-        }
-        messageBox.classList.remove('hidden');
-      }
+      function showMessage(text, type = 'info') {
+        messageBox.textContent = text;
+        messageBox.className = 'mt-6 p-4 rounded-lg text-sm';
+        // Hide support link by default on new message
+        supportLink.classList.add('hidden');
 
-      emailForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        if (type === 'success') {
+          messageBox.classList.add('bg-green-100', 'text-green-800', 'border', 'border-green-400');
+        } else if (type === 'error') {
+          messageBox.classList.add('bg-red-100', 'text-red-800', 'border', 'border-red-400');
+          // Show support link on error
+          supportLink.classList.remove('hidden');
+        } else {
+          messageBox.classList.add('bg-blue-100', 'text-blue-800', 'border', 'border-blue-400');
+        }
+        messageBox.classList.remove('hidden');
+      }
 
-        const email = emailInput.value.trim().toLowerCase();
-        if (!email) return showMessage('Please enter a valid email address.', 'error');
+      emailForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        // Ensure support link is hidden before starting the process
+        supportLink.classList.add('hidden');
 
-        sendButton.disabled = true;
-        sendButton.textContent = 'Processing...';
-        showMessage('Please wait...', 'info');
+        const email = emailInput.value.trim().toLowerCase();
+        if (!email) return showMessage('Please enter a valid email address.', 'error');
 
-        try {
-          const response = await fetch(EDGE_FUNCTION_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
-          });
+        sendButton.disabled = true;
+        sendButton.textContent = 'Processing...';
+        showMessage('Please wait...', 'info');
 
-          const result = await response.json();
+        try {
+          const response = await fetch(EDGE_FUNCTION_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+          });
 
-          if (result.status === 'success') {
-            showMessage(result.message, 'success');
-          } else {
-            showMessage(result.message || 'An error occurred.', 'error');
-          }
-        } catch (error) {
-          console.error('Error:', error);
-          showMessage('An unexpected error occurred. Please try again later.', 'error');
-        }
+          const result = await response.json();
 
-        sendButton.disabled = false;
-        sendButton.textContent = 'Send Reset Link';
-      });
-    </script>
-  </div>
+          if (result.status === 'success') {
+            showMessage(result.message, 'success');
+          } else {
+            // Explicitly show the support link on any non-success response from the function
+            showMessage(result.message || 'An error occurred. If this issue persists, please contact support.', 'error');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          // Explicitly show the support link on unexpected network/fetch errors
+          showMessage('An unexpected error occurred. Please try again later. If the problem continues, contact support.', 'error');
+        }
+
+        sendButton.disabled = false;
+        sendButton.textContent = 'Send Reset Link';
+      });
+    </script>
+  </div>
 </body>
 </html>
