@@ -1,118 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Send Password Reset Link</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-  </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLMDJzL3MxJpB+W0/qLYl2k9Rj7P3q1D61C8y8Q+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGk+93f+V+a5K5L1uGGg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Send Password Reset Link</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-  <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6">Send Password Reset Link</h2>
+  <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">Send Password Reset Link</h2>
 
-    <form id="email-form" class="space-y-4">
-      <input
-        type="email"
-        id="email"
-        placeholder="Enter your email"
-        required
-        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out text-gray-700"
-      />
-      <button
-        type="submit"
-        id="sendButton"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
-      >
-        Send Reset Link
-      </button>
-    </form>
+    <form id="email-form" class="space-y-4">
+      <input
+        type="email"
+        id="email"
+        placeholder="Enter your email"
+        required
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out text-gray-700"
+      />
+      <button
+        type="submit"
+        id="sendButton"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
+      >
+        Send Reset Link
+      </button>
+    </form>
 
-    <div id="message-box" class="mt-6 p-4 rounded-lg text-sm hidden"></div>
+    <div id="message-box" class="mt-6 p-4 rounded-lg text-sm hidden"></div>
 
-        <div id="support-link" class="mt-6 hidden">
-      <p class="text-gray-600 text-sm mb-2">
-        Not finding your account? Please **contact support**.
-      </p>
-      <a
-        href="https://wa.me/201093022198"
-        target="_blank"
-        class="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
-        title="Contact via WhatsApp"
-      >
-        <i class="fab fa-whatsapp text-lg mr-2"></i>         WhatsApp Support
-      </a>
-    </div>
-        <script>
-      const emailForm = document.getElementById('email-form');
-      const emailInput = document.getElementById('email');
-      const sendButton = document.getElementById('sendButton');
-      const messageBox = document.getElementById('message-box');
-      // Get the new support link element
-      const supportLink = document.getElementById('support-link');
+    <!-- 🔽 Contact Support Section (Initially Hidden) -->
+    <div id="support-box" class="hidden mt-4 flex items-center justify-center space-x-2 text-gray-700">
+      <span>Contact support?</span>
+      <a href="https://wa.me/201093022198" target="_blank" class="text-green-600 hover:text-green-700">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-6 h-6">
+          <path d="M12 0C5.372 0 0 5.373 0 12a11.94 11.94 0 0 0 1.606 6.003L0 24l6.236-1.63A11.944 11.944 0 0 0 12 24c6.628 0 12-5.373 12-12S18.628 0 12 0zm0 21.8a9.76 9.76 0 0 1-5.002-1.374l-.356-.21-3.706.968.992-3.614-.231-.372A9.77 9.77 0 0 1 2.2 12c0-5.404 4.396-9.8 9.8-9.8 5.404 0 9.8 4.396 9.8 9.8s-4.396 9.8-9.8 9.8zm5.392-7.301c-.296-.148-1.757-.867-2.03-.967-.272-.101-.471-.148-.67.148-.198.296-.768.967-.941 1.165-.173.197-.347.222-.643.074-.296-.149-1.251-.46-2.383-1.469-.881-.785-1.476-1.754-1.65-2.05-.173-.296-.018-.456.13-.604.133-.132.296-.347.445-.52.149-.174.198-.296.297-.494.1-.197.05-.371-.025-.52-.074-.148-.67-1.61-.917-2.207-.242-.579-.487-.5-.67-.51-.173-.009-.371-.011-.57-.011-.198 0-.52.074-.793.372-.272.296-1.04 1.016-1.04 2.478 0 1.461 1.065 2.875 1.213 3.074.149.197 2.1 3.204 5.09 4.494.712.307 1.267.489 1.7.626.714.228 1.363.196 1.875.119.572-.086 1.757-.718 2.006-1.412.247-.694.247-1.288.173-1.412-.074-.123-.272-.198-.57-.346z"/>
+        </svg>
+      </a>
+    </div>
 
-      // ⚙️ Replace this with your deployed Supabase Edge Function URL
-      const EDGE_FUNCTION_URL = "https://qxluetvkqxillhqsbubl.supabase.co/functions/v1/send-reset";
+    <script>
+      const emailForm = document.getElementById('email-form');
+      const emailInput = document.getElementById('email');
+      const sendButton = document.getElementById('sendButton');
+      const messageBox = document.getElementById('message-box');
+      const supportBox = document.getElementById('support-box');
 
-      function showMessage(text, type = 'info') {
-        messageBox.textContent = text;
-        messageBox.className = 'mt-6 p-4 rounded-lg text-sm';
-        // Hide support link by default on new message
-        supportLink.classList.add('hidden');
+      const EDGE_FUNCTION_URL = "https://qxluetvkqxillhqsbubl.supabase.co/functions/v1/send-reset";
 
-        if (type === 'success') {
-          messageBox.classList.add('bg-green-100', 'text-green-800', 'border', 'border-green-400');
-        } else if (type === 'error') {
-          messageBox.classList.add('bg-red-100', 'text-red-800', 'border', 'border-red-400');
-          // Show support link on error
-          supportLink.classList.remove('hidden');
-        } else {
-          messageBox.classList.add('bg-blue-100', 'text-blue-800', 'border', 'border-blue-400');
-        }
-        messageBox.classList.remove('hidden');
-      }
+      function showMessage(text, type = 'info') {
+        messageBox.textContent = text;
+        messageBox.className = 'mt-6 p-4 rounded-lg text-sm';
+        if (type === 'success') {
+          messageBox.classList.add('bg-green-100', 'text-green-800', 'border', 'border-green-400');
+          supportBox.classList.add('hidden');
+        } else if (type === 'error') {
+          messageBox.classList.add('bg-red-100', 'text-red-800', 'border', 'border-red-400');
+          supportBox.classList.remove('hidden');
+        } else {
+          messageBox.classList.add('bg-blue-100', 'text-blue-800', 'border', 'border-blue-400');
+          supportBox.classList.add('hidden');
+        }
+        messageBox.classList.remove('hidden');
+      }
 
-      emailForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        // Ensure support link is hidden before starting the process
-        supportLink.classList.add('hidden');
+      emailForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-        const email = emailInput.value.trim().toLowerCase();
-        if (!email) return showMessage('Please enter a valid email address.', 'error');
+        const email = emailInput.value.trim().toLowerCase();
+        if (!email) return showMessage('Please enter a valid email address.', 'error');
 
-        sendButton.disabled = true;
-        sendButton.textContent = 'Processing...';
-        showMessage('Please wait...', 'info');
+        sendButton.disabled = true;
+        sendButton.textContent = 'Processing...';
+        showMessage('Please wait...', 'info');
 
-        try {
-          const response = await fetch(EDGE_FUNCTION_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
-          });
+        try {
+          const response = await fetch(EDGE_FUNCTION_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+          });
 
-          const result = await response.json();
+          const result = await response.json();
 
-          if (result.status === 'success') {
-            showMessage(result.message, 'success');
-          } else {
-            // Explicitly show the support link on any non-success response from the function
-            showMessage(result.message || 'An error occurred. If this issue persists, please contact support.', 'error');
-          }
-        } catch (error) {
-          console.error('Error:', error);
-          // Explicitly show the support link on unexpected network/fetch errors
-          showMessage('An unexpected error occurred. Please try again later. If the problem continues, contact support.', 'error');
-        }
+          if (result.status === 'success') {
+            showMessage(result.message, 'success');
+          } else {
+            showMessage(result.message || 'An error occurred.', 'error');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          showMessage('An unexpected error occurred. Please try again later.', 'error');
+        }
 
-        sendButton.disabled = false;
-        sendButton.textContent = 'Send Reset Link';
-      });
-    </script>
-  </div>
+        sendButton.disabled = false;
+        sendButton.textContent = 'Send Reset Link';
+      });
+    </script>
+  </div>
 </body>
 </html>
