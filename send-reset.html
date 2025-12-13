@@ -87,8 +87,15 @@
 
           const result = await response.json();
 
-          if (result.status === 'success') {
-            showMessage(result.message, 'success');
+          // ✅ Treat "already registered" as SUCCESS
+          if (
+            result.status === 'success' ||
+            (result.message && result.message.toLowerCase().includes('already'))
+          ) {
+            showMessage(
+              'If this email exists, a password reset link has been sent.',
+              'success'
+            );
           } else {
             showMessage(result.message || 'An error occurred.', 'error');
           }
